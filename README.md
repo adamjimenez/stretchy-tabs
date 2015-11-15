@@ -30,4 +30,4 @@ $( ".tabs" ).on("tabsremove", func);
 $( ".tabs" ).on("tabsadd", func);
 ```
 
-[Demo](http://jsfiddle.net/adamjimenez/1myo7uk3/1/)
+[Demo](https://rawgit.com/adamjimenez/ui.tabs.overflowResize/master/demo/index.html)
