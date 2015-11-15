@@ -8,11 +8,11 @@ overflowResize provides methods for adding and removing tabs
 $( ".tabs" ).tabs("overflowResize");
 ```
 
-##Methods:
+##Methods
 * add
 * remove
 
-e.g.:
+e.g:
 ```
 $( ".tabs" ).tabs("add", "new tab", "content goes here");
 $( ".tabs" ).tabs("remove", index); //index is an integer for the tab position
