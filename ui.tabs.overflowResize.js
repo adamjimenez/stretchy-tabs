@@ -45,25 +45,26 @@ $.extend($.ui.tabs.prototype, {
 		}
 
 		function doResize(animate) {
-			console.log('resize overflow');
-			console.log(arguments);
-			buttonWidth = 0;
-			containerWidth = self._getList().width();
+			//console.log('resize overflow');
 
 			// get button width
+			var totalButtonWidth = 0;
 			self.tabs.each(function(i) {
 				var tab = self.tabs.eq(i);
 
 				if (tab.hasClass('button')) {
-					buttonWidth += tab.outerWidth(true);
+					totalButtonWidth += tab.outerWidth(true);
 				}
 			});
 
 			// calc new widths
-			var maxWidth = (containerWidth - buttonWidth) / self.tabs.length;
-			
-			var css = {'max-width' : maxWidth-2};
-			
+			var containerWidth = self._getList().width();
+			var item = self._getList().children(':not(.button)');
+			var totalMargin = (item.outerWidth(true) - item.width()) * self.tabs.length;
+			var availableWidth = containerWidth - totalButtonWidth - totalMargin;
+			var tabMaxWidth = availableWidth / self.tabs.length;
+			var css = {'max-width' : tabMaxWidth};
+
 			if(animate) {
 				self._getList().children(':not(.button)').animate(css, 'fast'); //subtract padding between tabs
 			} else {
@@ -77,7 +78,7 @@ $.extend($.ui.tabs.prototype, {
 
 		function mouseout() {
 			hover = false;
-			
+
 			if (resizeTimer) clearTimeout(resizeTimer);
 			resizeTimer = setTimeout(function(){ doResize(true) }, 500);
 		}
