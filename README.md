@@ -29,5 +29,6 @@ $( ".tabs" ).on("tabsbeforeremove", func);
 $( ".tabs" ).on("tabsremove", func);
 $( ".tabs" ).on("tabsadd", func);
 ```
-
-[Demo](https://rawgit.com/adamjimenez/ui.tabs.overflowResize/master/demo/index.html)
+##Demos
+* [Standard](https://rawgit.com/adamjimenez/ui.tabs.overflowResize/master/demo/index.html)
+* [Chrome Theme](https://rawgit.com/adamjimenez/ui.tabs.overflowResize/master/demo/chrome.html)
