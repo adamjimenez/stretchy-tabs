@@ -130,7 +130,7 @@ $.extend($.ui.tabs.prototype, {
 			doResize(true);
 
 			//middle click close
-			li.on('click', function(e){
+			li.on('mouseup', function(e){
 				if(e.which === 2) {
 					var li = $( this ).closest( "li" );
 					self.remove(li.index());
