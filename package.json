@@ -1,7 +1,7 @@
 { 
 	"name": "stretchy-tabs", 
 	"description": "Stretchy tabs for jquery-ui tabs",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"url": "https://github.com/adamjimenez/jstree-table",
 	"author": {"name":"Adam Jimenez","url":"https://github.com/adamjimenez"},
 	"main": "lib/ui.tabs.stretchyTabs.js",
