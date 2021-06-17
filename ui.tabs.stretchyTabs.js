@@ -4,7 +4,7 @@
  * Dual licensed under the MIT (MIT_LICENSE.txt)
  * and GPL (GPL_LICENSE.txt) licenses
  *
- * https://github.com/adamjimenez/ui.tabs.overflowResize
+ * https://github.com/adamjimenez/ui.tabs.stretchyTabs
  */
 
 (function($) {
@@ -24,7 +24,7 @@ uiTabsFuncs = $.extend(
 );
 
 $.extend($.ui.tabs.prototype, {
-	overflowResize: function(options) {
+	stretchyTabs: function(options) {
 		var self = this, initialized = false, buttonWidth, containerWidth, resizeTimer = null, hover = false;
 
 		// initialize overflow
