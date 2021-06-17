@@ -1,4 +1,4 @@
-# ui.tabs.overflowResize
+# stretchy tabs
 Chrome style tab-resizing for jQuery UI tabs
 
 overflowResize provides methods for adding and removing tabs
