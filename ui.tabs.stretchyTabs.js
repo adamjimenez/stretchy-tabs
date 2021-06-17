@@ -9,178 +9,220 @@
 
 (function($) {
 
-//  overridden ui.tabs functions
-var uiTabsFuncs = {
-	option: $.ui.tabs.prototype.option,
-	_ui: $.ui.tabs.prototype._ui,
-};
-
-uiTabsFuncs = $.extend(
-	uiTabsFuncs,
-	{
-		add: $.ui.tabs.prototype.add,
-		remove: $.ui.tabs.prototype.remove
-	}
-);
-
-$.extend($.ui.tabs.prototype, {
-	stretchyTabs: function(options) {
-		var self = this, initialized = false, buttonWidth, containerWidth, resizeTimer = null, hover = false;
-
-		// initialize overflow
-		function init() {
-			destroy();
-			$(window).on('resize', resize);
-			$(self._getList()).on('mouseover', mouseenter);
-			$(self._getList()).on('mouseout', mouseout);
-			initialized = true;
-			resize();
+	//  overridden ui.tabs functions
+	var uiTabsFuncs = {
+		option: $.ui.tabs.prototype.option,
+		_ui: $.ui.tabs.prototype._ui,
+	};
+	
+	uiTabsFuncs = $.extend(
+		uiTabsFuncs,
+		{
+			add: $.ui.tabs.prototype.add,
+			remove: $.ui.tabs.prototype.remove
 		}
-
-		function destroy() {
-			$(window).off('resize', resize);
-			$(self._getList()).off('mouseenter', mouseenter);
-			$(self._getList()).off('mouseout', mouseout);
-			initialized = false;
-		}
-
-		function doResize(animate) {
-			//console.log('resize overflow');
-
-			// get button width
-			var totalButtonWidth = 0;
-			self.tabs.each(function(i) {
-				var tab = self.tabs.eq(i);
-
-				if (tab.hasClass('button')) {
-					totalButtonWidth += tab.outerWidth(true);
-				}
-			});
-
-			// calc new widths
-			var containerWidth = parseFloat(window.getComputedStyle(self._getList()[0]).width);
-			var item = self._getList().children(':not(.button)');
-
-			if(!item.length)
-				return;
-
-			var totalMargin = (item[0].getBoundingClientRect().width - parseFloat(window.getComputedStyle(item[0]).width)) * self.tabs.length;
-			var availableWidth = containerWidth - totalButtonWidth - totalMargin;
-			var tabMaxWidth = availableWidth / item.length;
-			var css = {'max-width' : tabMaxWidth};
-
-			if(animate) {
-				self._getList().children(':not(.button)').animate(css, 'fast'); //subtract padding between tabs
-			} else {
-				self._getList().children(':not(.button)').css(css);
+	);
+	
+	$.extend($.ui.tabs.prototype, {
+		stretchyTabs: function() {
+			var self = this, initialized = false, resizeTimer = null, hover = false, touch = false, dirty = false;
+	
+			// initialize overflow
+			function init() {
+				destroy();
+				//$(window).on('resize', resize);
+				$(self._getList()).on('mouseover', mouseenter);
+				$(self._getList()).on('mouseout touchend', mouseout);
+				initialized = true;
+				self.resize();
 			}
-		}
-
-		function mouseenter() {
-			hover = true;
-			
-			if (resizeTimer) clearTimeout(resizeTimer);
-		}
-
-		function mouseout() {
-			hover = false;
-
-			if (resizeTimer) clearTimeout(resizeTimer);
-			resizeTimer = setTimeout(function(){ doResize(true) }, 500);
-		}
-
-		function resize(e, animate) {
-			if (resizeTimer) clearTimeout(resizeTimer);
-			resizeTimer = setTimeout(function(){ doResize(animate) }, 50);
-		}
-
-		self._ui = function( tab, panel ) {
-			return {
-				tab: tab,
-				panel: panel,
-				index: this.anchors.index( tab )
+	
+			function destroy() {
+				$(window).off('resize', self.resize);
+				$(self._getList()).off('mouseover', mouseenter);
+				$(self._getList()).off('mouseout', mouseout);
+				initialized = false;
+			}
+	
+			this.doResize = function(animate) {				
+				// calc new widths
+				var item = self._getList().children(':not(.button):visible');
+				if(!item.length)
+					return;
+					
+				// get button width
+				var totalButtonWidth = 0;
+				self.tabs.each(function(i) {
+					var tab = $(this);
+					if (tab.hasClass('button')) {
+						totalButtonWidth += tab.outerWidth();
+					}
+				});
+	
+				var tabMaxWidth = 1/item.length;
+				var borderWidth = item.outerWidth() - item.width();
+				var excess = borderWidth + (totalButtonWidth / item.length);
+				if (totalButtonWidth) {
+					excess += 2;
+				}
+				var css = {'max-width' : 'calc('+(tabMaxWidth*100) + '% - ' + excess + 'px)'};
+	
+				if(animate) {
+					var containerWidth = self._getList().width();
+					var nextWidth = (tabMaxWidth*containerWidth) - excess;
+					
+					// set widths to fixed as jquery can't animate with calc
+					item.each(function() {
+						$(this).css({
+							maxWidth: $(this).width()-1
+						});
+					});
+					
+					item.animate({
+						maxWidth: nextWidth
+					}, {
+						duration: 'fast', 
+						complete: function(){ 
+							item.css(css); 
+						} 
+					});
+				} else {
+					item.css(css);
+				}
+				
+				dirty = false;
 			};
-		};
-
-		// temporarily remove overflow buttons before adding a tab
-		self.add = function(name, content, iconCls) {
-			var newTab = false;
-
-			if (!name) {
-				name = 'New tab';
-				newTab = true;
-			}
-
-			if (!content)
-				content = '';
-
-			var id = $( "<div>"+content+"</div>" ).appendTo( this.element.children(':last-child') ).uniqueId().attr('id');
-			var ul = self._getList();
-			var li = $( '<li><a href="#'+id+'" class="closable" role="presentation">'+name+'</a></li>' ).insertBefore( $(ul).children('li.addTab') );
-
-			if (iconCls)
-				li.children('a').prepend('<span class="ui-icon '+iconCls+'"></span>');
-
-			li.uniqueId();
-
-			if(newTab)
-				li.attr('data-newtab', 1);
-
-			var index = li.index();
-
-			this.refresh(this);
-			doResize(true);
-
-			//middle click close
-			li.on('mouseup', function(e){
-				if(e.which === 2) {
-					var li = $( this ).closest( "li" );
-					self.remove(li.index());
+	
+			function mouseenter(e) {
+				if (touch) {
+					touch = false;
+				} else {
+					hover = true;
+					if (resizeTimer) clearTimeout(resizeTimer);
 				}
-			});
-
-			this.option( "active", index );
-			this._trigger( "add", null, this._ui( this.tabs[ index ], this.panels[ index ] ) );
-
-			return li;
-		};
-
-		self.remove = function(index) {
-			var result = this._trigger( "beforeRemove", null, this._ui( this.tabs[ index ], this.panels[ index ] ) );
-
-			if(result===false)
-				return;
-
-			index = this._getIndex( index );
-			var options = this.options,
-				tab = this.tabs.eq( index ).remove(),
-				panel = this._getPanelForTab( tab ).remove();
-
-			// If selected tab was removed focus tab to the right or
-			// in case the last tab was removed the tab to the left.
-			// We check for more than 2 tabs, because if there are only 2,
-			// then when we remove this tab, there will only be one tab left
-			// so we don't need to detect which tab to activate.
-			if ( tab.hasClass( "ui-tabs-active" ) && this.anchors.length > 2 ) {
-				this._activate( index + ( index + 1 < this.anchors.length ? 1 : -1 ) );
 			}
-
-			this.refresh(this);
-
-			if(!hover)
-				doResize();
-
-			this._trigger( "remove", null, this._ui( this.tabs[ index ], this.panels[ index ] ) );
-
-			return this;
-		};
-
-		self.getPanelForTab = function( tab ) {
-			return this._getPanelForTab( tab );
-		};
-
-		init();
-	}
-});
-
+	
+			function mouseout(e) {
+				hover = false;
+				
+				if (e.type==='touchend') {
+					touch = true;
+				}
+				
+				if (!dirty) {
+					return;
+				}
+				
+				if (resizeTimer) clearTimeout(resizeTimer);
+				resizeTimer = setTimeout(function(){ self.doResize(true); }, 500);
+			}
+	
+			self.resize = function(e, animate) {
+				dirty = true;
+				if (resizeTimer) clearTimeout(resizeTimer);
+				resizeTimer = setTimeout(function(){ self.doResize(animate); }, 50);
+			};
+	
+			self._ui = function( tab, panel ) {
+				return {
+					tab: tab,
+					panel: panel,
+					index: this.anchors.index( tab )
+				};
+			};
+	
+			// temporarily remove overflow buttons before adding a tab
+			self.add = function(name, content, iconCls) {
+				dirty = true;
+				
+				var newTab = false;
+	
+				if (!name) {
+					name = 'New tab';
+					newTab = true;
+				}
+	
+				if (!content)
+					content = '';
+	
+				var id = $( "<div>"+content+"</div>" ).appendTo( this.element.children(':last-child') ).uniqueId().attr('id');
+				var ul = self._getList();
+				var li = $( '<li style="max-width: 0;"><a href="#'+id+'" class="closable" role="presentation">'+name+'</a></li>' ).insertBefore( $(ul).children('li.addTab') );
+	
+				if (iconCls)
+					li.children('a').prepend('<span class="ui-icon '+iconCls+'"></span>');
+	
+				li.uniqueId();
+	
+				if(newTab)
+					li.attr('data-newtab', 1);
+	
+				var index = li.index();
+	
+				this.refresh(this);
+				self.doResize(true);
+	
+				//middle click close
+				li.children('a').on('mouseup', function(e){
+					if(e.which === 2) {
+						e.preventDefault();
+						var tabpanel = li.closest('.ui-tabs');
+						tabpanel.tabs('remove', li.index());
+						return false;
+					}
+				});
+	
+				this.option( "active", index );
+				this._trigger( "add", null, this._ui( this.tabs[ index ], this.panels[ index ] ) );
+	
+				return li;
+			};
+	
+			self.remove = function(index) {
+				dirty = true;
+				
+				var result = this._trigger( "beforeRemove", null, this._ui( this.tabs[ index ], this.panels[ index ] ) );
+	
+				if(result===false)
+					return;
+	
+				index = this._getIndex( index );
+				
+				var tab = this.tabs.eq( index );
+				var tabId = tab.attr('id');
+				tab.remove();
+				
+				var panel = this._getPanelForTab( tab ).remove();
+	
+				// If selected tab was removed focus tab to the right or
+				// in case the last tab was removed the tab to the left.
+				// We check for more than 2 tabs, because if there are only 2,
+				// then when we remove this tab, there will only be one tab left
+				// so we don't need to detect which tab to activate.
+				if ( tab.hasClass( "ui-tabs-active" ) && this.anchors.length > 2 ) {
+					this._activate( index + ( index + 1 < this.anchors.length ? 1 : -1 ) );
+				}
+	
+				this.refresh(this);
+	
+				if(!hover)
+					self.doResize();
+	
+				this._trigger( "remove", null, {
+					tabId: tabId,
+					panel: this.panels[ index ]
+				});
+	
+				return this;
+			};
+	
+			self.getPanelForTab = function( tab ) {
+				return this._getPanelForTab( tab );
+			};
+	
+			init();
+		}
+	});
+	
 })(jQuery);
+	
