@@ -30,7 +30,6 @@
 			// initialize overflow
 			function init() {
 				destroy();
-				//$(window).on('resize', resize);
 				$(self._getList()).on('mouseover', mouseenter);
 				$(self._getList()).on('mouseout touchend', mouseout);
 				initialized = true;
@@ -65,7 +64,7 @@
 				if (totalButtonWidth) {
 					excess += 2;
 				}
-				var css = {'max-width' : 'calc('+(tabMaxWidth*100) + '% - ' + excess + 'px)'};
+				var css = {'max-width' : 'calc(' + (tabMaxWidth*100) + '% - ' + excess + 'px)'};
 	
 				if(animate) {
 					var containerWidth = self._getList().width();
@@ -74,7 +73,7 @@
 					// set widths to fixed as jquery can't animate with calc
 					item.each(function() {
 						$(this).css({
-							maxWidth: $(this).width()-1
+							maxWidth: $(this).width() - 1
 						});
 					});
 					
@@ -82,7 +81,7 @@
 						maxWidth: nextWidth
 					}, {
 						duration: 'fast', 
-						complete: function(){ 
+						complete: function() { 
 							item.css(css); 
 						} 
 					});
@@ -105,7 +104,7 @@
 			function mouseout(e) {
 				hover = false;
 				
-				if (e.type==='touchend') {
+				if (e.type === 'touchend') {
 					touch = true;
 				}
 				
@@ -145,9 +144,9 @@
 				if (!content)
 					content = '';
 	
-				var id = $( "<div>"+content+"</div>" ).appendTo( this.element.children(':last-child') ).uniqueId().attr('id');
+				var id = $( "<div>" + content + "</div>" ).appendTo( this.element.children(':last-child') ).uniqueId().attr('id');
 				var ul = self._getList();
-				var li = $( '<li style="max-width: 0;"><a href="#'+id+'" class="closable" role="presentation">'+name+'</a></li>' ).insertBefore( $(ul).children('li.addTab') );
+				var li = $( '<li style="max-width: 0;"><a href="#' + id + '" class="closable" role="presentation">' + name + '</a></li>' ).insertBefore( $(ul).children('li.addTab') );
 	
 				if (iconCls)
 					li.children('a').prepend('<span class="ui-icon '+iconCls+'"></span>');
