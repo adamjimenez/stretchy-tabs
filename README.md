@@ -4,7 +4,7 @@ Chrome style tab-resizing for jQuery UI tabs
 stretchy tabs provides methods for adding and removing tabs
 
 ##Initialize stretchy tabs
-```
+```javascript
 $( ".tabs" ).tabs("stretchyTabs");
 ```
 
@@ -13,7 +13,7 @@ $( ".tabs" ).tabs("stretchyTabs");
 * remove
 
 e.g:
-```
+```javascript
 $( ".tabs" ).tabs("add", "new tab", "content goes here");
 $( ".tabs" ).tabs("remove", index); //index is an integer for the tab position
 ```
@@ -24,7 +24,7 @@ $( ".tabs" ).tabs("remove", index); //index is an integer for the tab position
 * tabsadd
 
 e.g:
-```
+```javascript
 $( ".tabs" ).on("tabsbeforeremove", func);
 $( ".tabs" ).on("tabsremove", func);
 $( ".tabs" ).on("tabsadd", func);
