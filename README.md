@@ -30,5 +30,5 @@ $( ".tabs" ).on("tabsremove", func);
 $( ".tabs" ).on("tabsadd", func);
 ```
 ##Demos
-* [Standard](https://rawgit.com/adamjimenez/ui.tabs.overflowResize/master/demo/index.html)
-* [Chrome Theme](https://rawgit.com/adamjimenez/ui.tabs.overflowResize/master/demo/chrome.html)
+* [Standard](https://cdn.statically.io/gh/adamjimenez/stretchy-tabs/master/demo/index.html)
+* [Chrome Theme](https://cdn.statically.io/gh/adamjimenez/stretchy-tabs/master/demo/chrome.html)
