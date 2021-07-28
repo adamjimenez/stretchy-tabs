@@ -11,19 +11,23 @@ li[role=tab] {
 li[role=tab] a.ui-tabs-anchor {
 	font-size: 1em !important;
 	margin: 0 !important;
-	padding: 10px !important;
 	font-weight: normal;
 	overflow: hidden;
 }
 
-li[role=tab] .ui-tabs-anchor{
+.ui-tabs .ui-tabs-nav li[role=tab] .ui-tabs-anchor{
 	flex: 1;
 	overflow: hidden;
 	outline: 0;
+	padding: .5em;
 }
 
 li[role=tab], li[role=tab] a{
 	cursor: default !important;
+}
+
+li[role=tab] .ui-icon{
+	display: inline-block;
 }
 
 li.button {
@@ -31,15 +35,18 @@ li.button {
 	max-width: 30px;
 }
 
-li[role=tab] a.tabCloseButton {
-	padding: 10px 10px 10px 0;
+li[role=tab]  .ui-icon {
 	opacity: 0.5;
 	line-height: 21px;
 	font-size: 1em;
-	margin: 0;
-	width: 12px;
+	padding: 0;
 }
 
 li[role=tab] a.tabCloseButton:hover {
 	opacity: 1 !important;
+}
+
+.ui-tabs .ui-tabs-nav li[role=tab] .closeTab, li[role=tab] > .ui-icon {
+	margin: 0.5em 0;
+	padding: 0;
 }

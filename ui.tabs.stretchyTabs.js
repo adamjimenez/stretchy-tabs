@@ -148,8 +148,11 @@
 				var ul = self._getList();
 				var li = $( '<li style="max-width: 0;"><a href="#' + id + '" class="closable" role="presentation">' + name + '</a></li>' ).insertBefore( $(ul).children('li.addTab') );
 	
-				if (iconCls)
-					li.children('a').prepend('<span class="ui-icon '+iconCls+'"></span>');
+				var icon = $('<span class="ui-icon ' + iconCls + '"></span>').insertBefore(li.children('a'));
+				
+				if (!iconCls) {
+					icon.hide();
+				}
 	
 				li.uniqueId();
 	

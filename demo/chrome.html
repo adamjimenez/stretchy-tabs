@@ -11,12 +11,21 @@
   <script type="text/javascript" src="../lib/ui.tabs.closable.js"></script>
   <script type="text/javascript" src="../lib/ui.tabs.addTab.js"></script>
   <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" type="text/css" href="../ui.tabs.stretchyTabs.css">
   <link rel="stylesheet" type="text/css" href="./chrome.css">
   <script>
     $(function(){
       $( ".tabpanel" ).tabs({closable: true, addTab:true}).tabs('stretchyTabs')
       .find( ".ui-tabs-nav" ).sortable({
         distance: 10
+      });
+
+      // overwrite new tab behaviour
+      $('.tabpanel').on('tabsadd', function (e, ui) {
+        var tab = $(ui.tab);
+        console.log(tab)
+        tab.find('.ui-icon').addClass('ui-icon-image').show();
+        return false;
       });
     });
   </script>
@@ -33,7 +42,7 @@
 
   <div class="tabpanel">
     <ul>
-      <li><a href="#tabs-1" class="closable">Nunc tincidunt</a></li>
+      <li><span class="ui-icon ui-icon-mail-closed"></span><a href="#tabs-1" class="closable">Nunc tincidunt</a></li>
       <li><a href="#tabs-2" class="closable">Proin dolor</a></li>
       <li><a href="#tabs-3" class="closable">Aenean lacinia</a></li>
     </ul>
