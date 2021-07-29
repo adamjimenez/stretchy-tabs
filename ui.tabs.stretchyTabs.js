@@ -32,6 +32,12 @@
 				destroy();
 				$(self._getList()).on('mouseover', mouseenter);
 				$(self._getList()).on('mouseout touchend', mouseout);
+
+				// forward icon click events
+				$(self._getList()).on('click', '.ui-icon', function() {
+					$(this).next().click();
+				});
+
 				initialized = true;
 				self.resize();
 			}
@@ -194,7 +200,7 @@
 				var tabId = tab.attr('id');
 				tab.remove();
 				
-				var panel = this._getPanelForTab( tab ).remove();
+				this._getPanelForTab( tab ).remove();
 	
 				// If selected tab was removed focus tab to the right or
 				// in case the last tab was removed the tab to the left.

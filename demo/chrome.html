@@ -23,7 +23,6 @@
       // overwrite new tab behaviour
       $('.tabpanel').on('tabsadd', function (e, ui) {
         var tab = $(ui.tab);
-        console.log(tab)
         tab.find('.ui-icon').addClass('ui-icon-image').show();
         return false;
       });
